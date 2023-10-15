@@ -37,4 +37,11 @@ create urls.py (see example)
 ## So is there a GUI?
 As a matter of fact: there is! Although the main focus is on making correct HAR files and making sure they are committed to github a rudimentary GUI has been made:   
 ![Main window](screenshot1.png "Main window")  
-The GUI shows you what url's are in the git repository.
+The GUI shows you what url's are in the git repository. If you select a url and click on "Export", all files in the HAR file are exported to a temp folder. Then the default browser is opened.
+The GUI at the moment can also query the commit versions of a url on the local repository.
+
+TODO:
+- Exporting of older versions of a url
+- Simple comparison of commit versions of a url (possibly with an alert if a url changes)
+- Check if local repository exists, ask to update or clone.
+- Currently the commit versions are printed to the shell. This should be a child window where versions can be compared.
