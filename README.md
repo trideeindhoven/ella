@@ -16,14 +16,13 @@ It is easiest to create a python3 venv environment and run everything in there:
 
 (optionally if not yet installed:)
 
-    sudo apt install python3-venv
-    sudo apt install firefox
+    sudo apt install python3-venv python3-tk firefox
 Next install Ella and it's venv:
 
     git clone https://github.com/trideeindhoven/ella.git
     cd ella
     python3 -m venv venv
-    venv/bin/pip3 install selenium-wire GitPython requests PySimpleGUI tk
+    venv/bin/pip3 install selenium-wire GitPython requests PySimpleGUI
     cd github
     ssh-keygen -f ./ella -N ""
 now use this key in github as a deploy key in your repository>
