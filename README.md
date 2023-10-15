@@ -17,6 +17,7 @@ It is easiest to create a python3 venv environment and run everything in there:
 (optionally if not yet installed:)
 
     sudo apt install python3-venv
+    sudo apt install firefox
 Next install Ella and it's venv:
 
     git clone https://github.com/trideeindhoven/ella.git
@@ -31,3 +32,5 @@ now use this key in github as a deploy key in your repository>
     cp config.py.example config.py
 Now edit config.py and
 create urls.py (see example)
+
+    venv/bin/python3 ./ella.py
