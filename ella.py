@@ -16,7 +16,7 @@ import config
 if os.path.isdir( config.gitdir ):
   print("repo exists in %s, pulling..."%(config.gitdir))
   repo = Repo( config.gitdir )
-  repo.git.update_environment(GIT_SSH_COMMAND=git_ssh_cmd)
+  repo.git.update_environment(GIT_SSH_COMMAND=config.git['ssh_cmd'])
   repo.remotes.origin.pull()
 else:
   os.makedirs( config.gitdir, exist_ok=True )
