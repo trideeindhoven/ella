@@ -63,7 +63,7 @@ with open(os.path.join(os.getcwd(), 'git', 'index.csv'), 'r') as f:
       continue
     try:
       h,u = line.split(';')
-      urlhashes[h] = u
+      urlhashes[h] = u.strip()
     except:
       pass
 
