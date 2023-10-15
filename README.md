@@ -12,4 +12,22 @@ Because Yealink and Dutch distributor [Lydis](https://www.lydis.nl "Lydis") were
 This tool takes a list of url's from urls.csv. It then starts a new, headless, Firefox browser and visits the url. The result of this crawl is stored in a .har file. This is an industry-standard way of storing pretty much everything about the visit to the website, including headers, timing information, http-codes, etc.
 Ella then downloads all external PDF files and also stores them. This package of PDF files and .har files is then push to a remote github.com repository, so that it no longer resides on hardware that i personally administrate. This automatically means the data crawled is now stored, timstamped and immutable on an external, public server available for, say, a judge to look at.
 ## So how do i install Ella?
-It is easiest to create a python3 venv environment and run everything in there.
+It is easiest to create a python3 venv environment and run everything in there:
+
+(optionally if not yet installed:)
+
+    sudo apt install python3-venv
+Next install Ella and it's venv:
+
+    git clone https://github.com/trideeindhoven/ella.git
+    cd ella
+    python3 -m venv venv
+    venv/bin/pip3 install selenium-wire GitPython requests
+    cd github
+    ssh-keygen -f ./ella -N ""
+now use this key in github as a deploy key in your repository>
+
+    cd ..
+    cp config.py.example config.py
+Now edit config.py and
+create urls.py (see example)
