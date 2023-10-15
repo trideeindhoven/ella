@@ -2,7 +2,7 @@
 A forensic tool to crawl and store website content
 
 ## What is "Ella"
-Apart from this tool, Ella is a cat known for being very inquisite. It only seemed appropriate to name the tool after her.
+Apart from this tool, Ella is a cat known for being very inquisite. It only seemed appropriate to name the tool after her.  
 ![Ella the cat](ella.jpg "Ella the cat")
 ## Why have you made this tool?
 In 2023, after a year of researching, i worked with investigative journalist platform "[Follow The Money](https://www.ftm.eu "Follow The Money")" (FTM) to publish an article about security malpractises of the Chinese firm [Yealink](https://www.yealink.com "Yealink").
