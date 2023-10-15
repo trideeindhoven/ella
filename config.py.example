@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+import os
+
 git = {
     url:               'git@github.com:yourgithubhandle/yourrepo.git',
     ssh_identity_file:  os.path.join(os.getcwd(),'github', 'ella'),
