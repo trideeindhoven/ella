@@ -33,3 +33,8 @@ Now edit config.py and
 create urls.py (see example)
 
     venv/bin/python3 ./ella.py
+
+## So is there a GUI?
+As a matter of fact: there is! Although the main focus is on making correct HAR files and making sure they are committed to github a rudimentary GUI has been made:   
+![Main window](screenshot1.png "Main window")  
+The GUI shows you what url's are in the git repository.
