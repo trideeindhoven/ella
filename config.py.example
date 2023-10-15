@@ -1,0 +1,10 @@
+#!/usr/bin/python3
+
+git = {
+    url:               'git@github.com:yourgithubhandle/yourrepo.git',
+    ssh_identity_file:  os.path.join(os.getcwd(),'github', 'ella'),
+    ssh_cmd:           'ssh -o StrictHostKeyChecking=accept-new -i %s' % os.path.join(os.getcwd(),'github', 'ella')
+}
+
+pdfregex = r"([^\'\"]+\.pdf)"
+gitdir   = os.path.join(os.getcwd(), 'git')
