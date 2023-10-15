@@ -23,7 +23,7 @@ Next install Ella and it's venv:
     git clone https://github.com/trideeindhoven/ella.git
     cd ella
     python3 -m venv venv
-    venv/bin/pip3 install selenium-wire GitPython requests PySimpleGUI
+    venv/bin/pip3 install selenium-wire GitPython requests PySimpleGUI tk
     cd github
     ssh-keygen -f ./ella -N ""
 now use this key in github as a deploy key in your repository>
