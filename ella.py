@@ -12,6 +12,7 @@ import json
 import re
 import requests
 import config
+import gzip
 
 if os.path.isdir( config.gitdir ):
   print("repo exists in %s, pulling..."%(config.gitdir))
@@ -52,7 +53,7 @@ with open('urls.csv', 'r') as f:
   
   for line in lines:
     if line != '' and not line.startswith('#'):
-      urls.append(line)
+      urls.append(line.strip())
 
 commit_files = [os.path.join(os.getcwd(), 'git', 'index.csv')]
 urlhashes = {}
@@ -77,9 +78,12 @@ for url in urls:
   urlbase   = urlparse(url).netloc
   urlscheme = urlparse(url).scheme
 
-  with open(os.path.join(os.getcwd(), 'git', '%s.har'%(urlhash)), 'w') as f:
-    f.write(browser.get_har())
-  commit_files.append(os.path.join(os.getcwd(), 'git', '%s.har'%(urlhash)))
+  har = browser.get_har()
+  #with open(os.path.join(os.getcwd(), 'git', '%s.har'%(urlhash)), 'w') as f:
+  #  f.write(har)
+  with gzip.open(os.path.join(os.getcwd(), 'git', '%s.har.gz'%(urlhash)), "wb") as f:
+    f.write(har.encode())
+  commit_files.append(os.path.join(os.getcwd(), 'git', '%s.har.gz'%(urlhash)))
   if urlhash not in urlhashes:
     urlhashes[urlhash] = url
 
@@ -128,6 +132,7 @@ with open(os.path.join(os.getcwd(), 'git', 'index.csv'), 'w') as f:
   for hash in dict( sorted(urlhashes.items(), key=lambda x:x[1]) ):
     f.write( "%s;%s\n"%(hash, urlhashes[hash].strip() ) )
 
+#print(commit_files)
 repo.index.add(commit_files)
 repo.index.commit("Update %s"%(datetime.now().strftime("%d-%m-%Y %H:%M:%S")))
 repo.remote('origin').push()
