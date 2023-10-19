@@ -89,6 +89,8 @@ for url in urls:
             resource = "%s://%s/%s"%( urlscheme, urlbase, resource.lstrip('/') )
           print("Resource found: %s"%(resource) )
           resources.append(resource)
+          if config.spn2['enabled']:
+            spn2.submit(resource)
         except Exception as e:
           print(e)
           pass
