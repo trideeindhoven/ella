@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 
-from seleniumwire import webdriver
-from selenium.webdriver.firefox.options import Options
 from git import Repo
 from git import Git
 import os, sys, shutil
@@ -13,6 +11,10 @@ import re
 import requests
 import config
 import gzip
+from spn2 import SPN2
+from browser import Browser
+
+spn2 = SPN2(access_key=config.spn2['access_key'], secret_key=config.spn2['secret_key'])
 
 if os.path.isdir( config.gitdir ):
   print("repo exists in %s, pulling..."%(config.gitdir))
@@ -23,29 +25,6 @@ else:
   os.makedirs( config.gitdir, exist_ok=True )
   print("Cloning %s into %s"%(config.git['url'], config.gitdir))
   repo = Repo.clone_from(config.git['url'], os.path.join(os.getcwd(), 'git'),env=dict(GIT_SSH_COMMAND=config.git['ssh_cmd']))
-
-class Browser:
-  def __init__(self):
-    self.seleniumwire_options = {
-        'enable_har': True  # Capture HAR data, retrieve with driver.har
-    }
-    self.options = Options()
-    self.options.headless = True
-    self.options.add_argument("--headless")
-    try:
-      self.driver = webdriver.Firefox(seleniumwire_options=self.seleniumwire_options, options=self.options)
-    except Exception as e:
-        print(e)
-        sys.exit(0)
-
-  def __del__(self):
-    self.driver.quit()
-
-  def get(self, url):
-    self.driver.get(url)
-
-  def get_har(self):
-    return self.driver.har
 
 urls = []
 with open('urls.csv', 'r') as f:
@@ -72,6 +51,9 @@ for url in urls:
   m = hashlib.sha1()
   browser = Browser()
   print("Getting url %s"%(url))
+  if config.spn2['enabled']:
+    spn2.submit(url)
+
   browser.get(url)
   m.update(url.encode())
   urlhash   = m.hexdigest()

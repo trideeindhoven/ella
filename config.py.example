@@ -10,3 +10,10 @@ git = {
 
 pdfregex = r"([^\'\"]+\.pdf)"
 gitdir   = os.path.join(os.getcwd(), 'git')
+
+spn2 = {
+    'enabled':     False,
+    'access_key': 'example',
+    'secret_key': 'example'
+}
+
