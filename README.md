@@ -10,7 +10,8 @@ As a direct consequence of this article i was legally threatened with consequenc
 Because Yealink and Dutch distributor [Lydis](https://www.lydis.nl "Lydis") were sometimes creative with the truth i felt i had to help them a bit remembering facts.
 ## So what does this tool do?
 This tool takes a list of url's from urls.csv. It then starts a new, headless, Firefox browser and visits the url. The result of this crawl is stored in a .har file. This is an industry-standard way of storing pretty much everything about the visit to the website, including headers, timing information, http-codes, etc.
-Ella then downloads all external PDF files and also stores them. This package of PDF files and .har files is then pushed to a remote github.com repository, so that it no longer resides on hardware that i personally administrate. This automatically means the data crawled is now stored, timstamped and immutable on an external, public server available for, say, a judge to look at.
+Ella then downloads all external PDF files and also stores them. This package of PDF files and .har files is then pushed to a remote github.com repository, so that it no longer resides on hardware that i personally administrate. This automatically means the data crawled is now stored, timestamped and immutable on an external, public server available for, say, a judge to look at.
+Additionally Ella implements the SPN2 API of the [Wayback Machine](https://web.archive.org/). This way you can save another instance of a webpage on another infrastructure outside of your own control. In order to use the Wayback Machine's SPN2 API you need to get an access- and secret key. You can obtain these for free by visiting https://archive.org/account/s3.php .
 ## So how do i install Ella?
 It is easiest to create a python3 venv environment and run everything in there:
 
