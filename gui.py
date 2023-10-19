@@ -43,7 +43,7 @@ while True:
   if event in (sg.WIN_CLOSED, 'Exit'):
     break
   elif event == 'Export':
-    har.load_har(os.path.join(config.gitdir, "%s.har"%(urls[values['URLS'][0]]) ) )
+    har.load_har(os.path.join(config.gitdir, "%s.har.gz"%(urls[values['URLS'][0]]) ) )
     webbrowser.open(os.path.join('temp', "%s.html"%(har.basehash) ) )
   elif event == 'Versions':
     repo = Repo(config.gitdir)
