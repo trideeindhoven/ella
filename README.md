@@ -2,7 +2,7 @@
 A forensic tool to crawl and store website content
 
 ## What is "Ella"
-Apart from this tool, Ella is a cat known for being very inquisite. It only seemed appropriate to name the tool after her.  
+Apart from this tool, Ella is a cat known for being very inquisitive. It only seemed appropriate to name the tool after her.  
 ![Ella the cat](ella.jpg "Ella the cat")
 ## Why have you made this tool?
 In 2023, after a year of researching, i worked with investigative journalist platform "[Follow The Money](https://www.ftm.eu "Follow The Money")" (FTM) to publish an article about security malpractises of the Chinese firm [Yealink](https://www.yealink.com "Yealink").
@@ -39,10 +39,8 @@ create urls.py (see example)
 As a matter of fact: there is! Although the main focus is on making correct HAR files and making sure they are committed to github a rudimentary GUI has been made:   
 ![Main window](screenshot1.png "Main window")  
 The GUI shows you what url's are in the git repository. If you select a url and click on "Export", all files in the HAR file are exported to a temp folder. Then the default browser is opened.
-The GUI at the moment can also query the commit versions of a url on the local repository.
+The GUI at the moment can also query the commit versions of a url on the local repository. For every previously crawled version it is also possible to export that
+particular version and view it in your default browser.
 
 TODO:
-- Exporting of older versions of a url
 - Simple comparison of commit versions of a url (possibly with an alert if a url changes)
-- Check if local repository exists, ask to update or clone.
-- Currently the commit versions are printed to the shell. This should be a child window where versions can be compared.
