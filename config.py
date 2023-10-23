@@ -3,21 +3,27 @@
 from configparser import ConfigParser
 import sys
 
-config_object = ConfigParser()
+class Config:
+  def __init__(self):
+    self.config_object = ConfigParser()
+    try:
+      self.config_object.read("config.ini")
+    except Exception as e:
+      print("Unable to read config file config.ini")
+      print(e)
 
-try:
-  config_object.read("config.ini")
-except:
-  print("Unable to read config file config.ini")
-  sys.exit(0)
+if __name__ == '__main__':
+  from pprint import pprint
+  config = Config()
+  pprint( config )
+  pprint( config.config_object )
 
-from pprint import pprint
-for key in  config_object['GIT']:
-  print("%s = %s"%(key, config_object['GIT'][key]))
-print( config_object['GIT']['url'] )
+  #for key in  config.config_object['GIT']:
+  #  print("%s = %s"%(key, config.config_object['GIT'][key]))
+  #print( config.config_object['GIT']['url'] )
 
-config_object['GIT']['url'] = "https://www.nu.nl"
+  #config.config_object['GIT']['url'] = "https://www.nu.nl"
 
-for key in  config_object['GIT']:
-  print("%s = %s"%(key, config_object['GIT'][key]))
+  #for key in config.config_object['GIT']:
+  #  print("%s = %s"%(key, config.config_object['GIT'][key]))
 
