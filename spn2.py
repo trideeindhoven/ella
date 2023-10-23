@@ -2,6 +2,7 @@
 
 import requests
 import config
+import time
 
 class SPN2:
   def __init__(self, access_key, secret_key):
@@ -18,8 +19,15 @@ class SPN2:
     }
     data = {'url': url}
 
-    resp = self.session.post('https://web.archive.org/save', headers=headers, data=data)
-    self.job_id = resp.json()['job_id']
+    for _ in range(10):
+      resp = self.session.post('https://web.archive.org/save', headers=headers, data=data)
+      try:
+        self.job_id = resp.json()['job_id']
+        break
+      except:
+        print("ERROR: unable to get job_id from Wayback Machine")
+        #print(resp.content)
+        time.sleep(30)
     
     return resp.status_code
 
