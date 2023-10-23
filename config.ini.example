@@ -1,0 +1,13 @@
+[GIT]
+url = git@github.com:<githandle>/<reponame>.git
+dir = /temp/dit/for/cloning/git
+key = """-----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABlwAAAAdzc2gtcn
+etc etc etc
+J/LNtwSZfOgIgxAAAAEmpoZXJtYW5zQGthbnRvb3JwYw==
+-----END OPENSSH PRIVATE KEY-----"""
+
+[SPN2]
+enabled    = True
+access_key = example123
+secret_key = qwerty
