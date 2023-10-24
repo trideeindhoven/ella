@@ -24,11 +24,6 @@ Next install Ella and it's venv:
     cd ella
     python3 -m venv venv
     venv/bin/pip3 install selenium-wire GitPython requests PySimpleGUI pycryptodome
-    cd github
-    ssh-keygen -f ./ella -N ""
-now use this key in github as a deploy key in your repository>
-
-    cd ..
     cp config.py.example config.py
 Now edit config.py and
 create urls.py (see example)
