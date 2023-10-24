@@ -12,6 +12,10 @@ class Config:
       print("Unable to read config file config.ini")
       print(e)
 
+  def write(self):
+    with open('config.ini', 'w') as configfile:
+      self.config_object.write(configfile)
+
 if __name__ == '__main__':
   from pprint import pprint
   config = Config()

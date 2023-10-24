@@ -10,15 +10,32 @@ from git import Git
 import time
 from gzip import GzipFile
 import io
+from config     import Config
+from cryptokeys import Cryptokeys
+import sys
 
-version = 'v1.0'
+version = 'v1.1'
 
 har = Har()
+config = Config()
+sg.theme('DefaultNoMoreNagging')
 
 urls = {}
+ssh_cmd = 'ssh -o StrictHostKeyChecking=accept-new -i %s' % os.path.join(os.getcwd(),'github', 'ella')
+
+def get_urls_from_index_csv():
+  with open(os.path.join( config.config_object['GIT']['dir'], 'index.csv' ), 'r') as f:
+    lines = f.readlines()
+
+    for line in lines:
+      if line != '' and not line.startswith('#') and not line.startswith('hash'):
+        h,u = line.split(';')
+        urls[u.strip()] = h
+  return urls
+
 
 def get_commits(filename):
-  repo = Repo(config.gitdir)
+  repo = Repo(config.config_object['GIT']['dir'])
   commits = list( repo.iter_commits(all=True, max_count=10, paths=filename) )
   print(filename)
   returnarr=[]
@@ -61,7 +78,7 @@ def open_commit_window(filename):
       if data_selected != []:
         commit_hash = data_selected[0][2]
         print( commit_hash )
-        repo = Repo(config.gitdir)
+        repo = Repo(config.config_object['GIT']['dir'])
         commit = repo.commit(commit_hash)
 
         targetfile = commit.tree / filename
@@ -69,12 +86,53 @@ def open_commit_window(filename):
         os.makedirs( 'temp', exist_ok=True )
         with open(os.path.join('temp', filename), 'wb') as f:
           f.write(targetfile.data_stream.read())
-        har.load_har(os.path.join(config.gitdir, filename ) )
+        har.load_har(os.path.join(config.config_object['GIT']['dir'], filename ) )
         webbrowser.open(os.path.join('temp', "%s.html"%(har.basehash) ) )
 
   window.close()
 
+
+if config.config_object['GIT']['key'] == '':
+  key = Cryptokeys()
+  key.generate()
+  form_rows = [
+               [sg.Text('No private key found for git access! A new private key has been generated.\n'+\
+                        'This new private key has been saved to the config.ini file.\n'+\
+                        'Please add the public key below as a "deploy key" to your github repository:')],
+               [sg.Multiline(key.public_key(), size=(80,12), disabled=True)],
+               [sg.Button('Exit')],
+  ]
+  config.config_object['GIT']['key'] = key.private_key()
+  config.write()
+
+  window = sg.Window('Ella forensic website tool %s by Jeroen Hermans'%(version), form_rows, finalize=True)
+  while True:
+    event, values = window.read()
+    if event in (sg.WIN_CLOSED, 'Exit'):
+      break
+  window.close()
+  sys.exit(0)
+
+if not os.path.isdir( config.config_object['GIT']['dir'] ):
+  os.makedirs( config.config_object['GIT']['dir'], exist_ok=True )
+  print("Cloning %s into %s"%(config.config_object['GIT']['url'], config.config_object['GIT']['dir']))
+  repo = Repo.clone_from(config.config_object['GIT']['url'], config.config_object['GIT']['dir'], env=dict(GIT_SSH_COMMAND=ssh_cmd))
+else:
+  print("repo exists in %s, pulling..."%( config.config_object['GIT']['dir'] ))
+  repo = Repo( config.config_object['GIT']['dir'] )
+  repo.git.update_environment(GIT_SSH_COMMAND=ssh_cmd)
+  repo.remotes.origin.pull()
+
+urls = get_urls_from_index_csv()
+
+
+
+
 form_rows = [
+             [sg.Menu([['File', ['Open', 'Save', 'Exit',]],
+                ['Edit', ['Paste', ['Special', 'Normal',], 'Undo'],],
+                ['Help', 'About...'],])
+             ],
              [sg.Listbox(values=[], key="URLS", size=(70, 6))],
              [[sg.Button('Export', enable_events=True)], [sg.Button('Versions', enable_events=True)]],
              [sg.Button('Exit')],
@@ -82,19 +140,6 @@ form_rows = [
 
 sg.theme('DefaultNoMoreNagging')
 window = sg.Window('Ella forensic website tool %s by Jeroen Hermans'%(version), form_rows, finalize=True)
-
-if not os.path.isdir( config.gitdir ):
-  os.makedirs( config.gitdir, exist_ok=True )
-  print("Cloning %s into %s"%(config.git['url'], config.gitdir))
-  repo = Repo.clone_from(config.git['url'], config.gitdir, env=dict(GIT_SSH_COMMAND=config.git['ssh_cmd']))
-
-with open(os.path.join( config.gitdir, 'index.csv' ), 'r') as f:
-  lines = f.readlines()
-
-  for line in lines:
-    if line != '' and not line.startswith('#') and not line.startswith('hash'):
-      h,u = line.split(';')
-      urls[u.strip()] = h
 window["URLS"].update( list( urls.keys() ) )
 
 while True:
@@ -102,7 +147,7 @@ while True:
   if event in (sg.WIN_CLOSED, 'Exit'):
     break
   elif event == 'Export':
-    har.load_har(os.path.join(config.gitdir, "%s.har.gz"%(urls[values['URLS'][0]]) ) )
+    har.load_har(os.path.join(config.config_object['GIT']['dir'], "%s.har.gz"%(urls[values['URLS'][0]]) ) )
     webbrowser.open(os.path.join('temp', "%s.html"%(har.basehash) ) )
   elif event == 'Versions':
     commit_window = open_commit_window("%s.har.gz"%(urls[values['URLS'][0]]))
