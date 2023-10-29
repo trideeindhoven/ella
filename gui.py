@@ -22,6 +22,9 @@ sg.theme('DefaultNoMoreNagging')
 
 urls = {}
 ssh_cmd = 'ssh -o StrictHostKeyChecking=accept-new -i %s' % os.path.join(os.getcwd(),'github', 'ella')
+with open( os.path.join(os.getcwd(),'github', 'ella') , 'w') as f:
+  f.write(config.config_object['GIT']['key']+"\n")
+os.chmod(os.path.join(os.getcwd(),'github', 'ella'), 0o600)
 
 def get_urls_from_index_csv():
   with open(os.path.join( config.config_object['GIT']['dir'], 'index.csv' ), 'r') as f:

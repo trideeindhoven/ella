@@ -9,22 +9,30 @@ from urllib.parse import urlparse
 import json
 import re
 import requests
-import config
+from config import Config
 import gzip
 from spn2 import SPN2
 from browser import Browser
 
-spn2 = SPN2(access_key=config.spn2['access_key'], secret_key=config.spn2['secret_key'])
+config = Config()
+spn2 = SPN2(access_key=config.config_object['SPN2']['access_key'], secret_key=config.config_object['SPN2']['secret_key'])
+pdfregex = r"([^\'\"]+\.pdf)"
+ssh_cmd = 'ssh -o StrictHostKeyChecking=accept-new -i %s' % os.path.join(os.getcwd(),'github', 'ella')
+with open( os.path.join(os.getcwd(),'github', 'ella') , 'w') as f:
+  f.write(config.config_object['GIT']['key']+"\n")
+os.chmod(os.path.join(os.getcwd(),'github', 'ella'), 0o600)
 
-if os.path.isdir( config.gitdir ):
-  print("repo exists in %s, pulling..."%(config.gitdir))
-  repo = Repo( config.gitdir )
-  repo.git.update_environment(GIT_SSH_COMMAND=config.git['ssh_cmd'])
+if os.path.isdir( config.config_object['GIT']['dir'] ):
+  print("repo exists in %s, pulling..."%(config.config_object['GIT']['dir']))
+  repo = Repo( config.config_object['GIT']['dir'] )
+  repo.git.update_environment(GIT_SSH_COMMAND=ssh_cmd)
   repo.remotes.origin.pull()
 else:
-  os.makedirs( config.gitdir, exist_ok=True )
-  print("Cloning %s into %s"%(config.git['url'], config.gitdir))
-  repo = Repo.clone_from(config.git['url'], os.path.join(os.getcwd(), 'git'),env=dict(GIT_SSH_COMMAND=config.git['ssh_cmd']))
+  os.makedirs( config.config_object['GIT']['dir'], exist_ok=True )
+  print("Cloning %s into %s"%(config.config_object['GIT']['url'], config.config_object['GIT']['dir']))
+  repo = Repo.clone_from(config.config_object['GIT']['url'], 
+                         os.path.join(os.getcwd(), 'git'),
+                         env=dict(GIT_SSH_COMMAND=ssh_cmd))
 
 urls = []
 with open('urls.csv', 'r') as f:
@@ -51,7 +59,7 @@ for url in urls:
   m = hashlib.sha1()
   browser = Browser()
   print("Getting url %s"%(url))
-  if config.spn2['enabled']:
+  if config.config_object['SPN2']['enabled']:
     spn2.submit(url)
 
   browser.get(url)
@@ -80,7 +88,7 @@ for url in urls:
         else:
           start = index - 512
         try:
-          resource = re.findall(config.pdfregex, entry['response']['content']['text'][start:index+4])[-1] #only last occurance
+          resource = re.findall( pdfregex, entry['response']['content']['text'][start:index+4])[-1] #only last occurance
 
           if "file://" in resource:
             index=entry['response']['content']['text'].find(".pdf", index+4)
@@ -89,7 +97,7 @@ for url in urls:
             resource = "%s://%s/%s"%( urlscheme, urlbase, resource.lstrip('/') )
           print("Resource found: %s"%(resource) )
           resources.append(resource)
-          if config.spn2['enabled']:
+          if config.config_object['SPN2']['enabled']:
             spn2.submit(resource)
         except Exception as e:
           print(e)
@@ -98,7 +106,7 @@ for url in urls:
       break #found exact url and no need to search other urls
   
   if len(resources):
-    resourcedir = os.path.join( config.gitdir, urlhash )
+    resourcedir = os.path.join( config.config_object['GIT']['dir'], urlhash )
     os.makedirs( resourcedir, exist_ok=True )
     commit_files.append( resourcedir )
     for resource in resources:
@@ -117,7 +125,9 @@ with open(os.path.join(os.getcwd(), 'git', 'index.csv'), 'w') as f:
     f.write( "%s;%s\n"%(hash, urlhashes[hash].strip() ) )
 
 #print(commit_files)
-repo.index.add(commit_files)
-repo.index.commit("Update %s"%(datetime.now().strftime("%d-%m-%Y %H:%M:%S")))
-repo.remote('origin').push()
+if config.config_object['GIT']['commit']:
+  repo.index.add(commit_files)
+  repo.index.commit("Update %s"%(datetime.now().strftime("%d-%m-%Y %H:%M:%S")))
+  repo.remote('origin').push()
 #shutil.rmtree( os.path.join(os.getcwd(), 'git') )
+
